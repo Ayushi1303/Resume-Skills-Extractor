@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
-import resume_parser
+import resume_skills_extraction as resume_parser
 
 app = Flask(__name__)
 

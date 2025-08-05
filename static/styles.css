@@ -8,12 +8,12 @@ body {
 }
 
 .container {
-    width: 80%;
+    inline-size: 80%;
     margin: auto;
     padding: 30px;
     background-color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 50px;
+    margin-block-start: 50px;
     border-radius: 8px;
 }
 
@@ -32,7 +32,7 @@ h1 {
 /* Upload Section */
 .upload-section {
     text-align: center;
-    margin-top: 30px;
+    margin-block-start: 30px;
 }
 
 .upload-btn {
@@ -55,7 +55,7 @@ h1 {
 
 .submit-btn {
     display: inline-block;
-    margin-top: 20px;
+    margin-block-start: 20px;
     padding: 10px 20px;
     background-color: #007bff;
     color: white;
@@ -70,12 +70,12 @@ h1 {
 
 /* Result Section */
 .result {
-    margin-top: 30px;
+    margin-block-start: 30px;
     font-size: 1.2rem;
 }
 
 .result p {
-    margin-bottom: 10px;
+    margin-block-end: 10px;
 }
 
 .result span {
@@ -84,7 +84,7 @@ h1 {
 }
 
 .skills-container {
-    margin-top: 15px;
+    margin-block-start: 15px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -108,7 +108,7 @@ h1 {
 
 /* Back Button */
 .back-button {
-    margin-top: 30px;
+    margin-block-start: 30px;
     text-align: center;
 }
 
