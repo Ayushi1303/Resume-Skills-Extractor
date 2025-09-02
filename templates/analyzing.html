@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer</title>
+    <style>
+        .analyzing-container {
+            text-align: center;
+            margin-block-start: 50px;
+        }
+        .spinner {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-block-start: 16px solid #3498db;
+            inline-size: 120px;
+            block-size: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="analyzing-container">
+        <div class="spinner"></div>
+        <h2>Analyzing your resume...</h2>
+        <p class="loading-text">Extracting skills and generating your personalized quiz.</p>
+    </div>
+    <script>
+        // Wait 2 seconds, then POST to /process_resume
+        setTimeout(function() {
+            fetch("/process_resume", {method: "POST"})
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                });
+        }, 2000);
+    </script>
+</body>
+</html>
