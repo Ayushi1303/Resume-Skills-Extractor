@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Score</title>
+</head>
+<body>
+    <h2>Your Score: {{ score }} / {{ total }}</h2>
+    <ul>
+        {% for r in results %}
+            <li>
+                <strong>{{ r.question }}</strong><br>
+                Your answer: {{ r.your_answer }} {% if r.is_correct %}✔️{% else %}❌ (Correct: {{ r.correct_answer }}){% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <h3>Recommended Learning Resources:</h3>
+    <ul>
+        {% for note in notes %}
+            <li><a href="{{ note.url }}" target="_blank">{{ note.text }}</a></li>
+        {% endfor %}
+    </ul>
+    <h3>Companies you can apply to:</h3>
+    <ul>
+        {% for company in companies %}
+            <li><a href="{{ company.url }}" target="_blank">{{ company.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('retry') }}">Try Again</a>
+</body>
+</html>
