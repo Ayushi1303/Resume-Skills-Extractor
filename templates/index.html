@@ -9,18 +9,118 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Resume Skill Extractor</h1>
-            <p>Upload your resume and get the name and skills extracted!</p>
+            <h1 style="font-size:2.8rem; color:#2d3a4a; font-weight:800; letter-spacing:1px; margin-block-end:0.3em;">🚀 Resume Skill Extractor</h1>
+            <p style="font-size:1.2rem; color:#4f8cff; font-weight:600; margin-block-end:0.7em;">Upload your resume and get your skills extracted instantly!</p>
+            <p style="font-size:1.05rem; color:#5a6a85; margin-block-end:1.5em;">Get a personalized quiz and career recommendations.<br>
+            <span style="color:#38c6ff;font-weight:600;">Your next opportunity starts here.</span></p>
         </div>
-        <div class="upload-section">
-            <form action="/upload" method="POST" enctype="multipart/form-data">
-                <label for="file-upload" class="upload-btn">
-                    <span>Choose Resume</span>
-                </label>
-                <input type="file" id="file-upload" name="file" accept=".pdf, .docx">
-                <button type="submit" class="submit-btn">Upload</button>
-            </form>
+        <div class="upload-section" style="background:#f8fafc; border-radius:16px; box-shadow:0 4px 24px rgba(60,80,120,0.08); padding:32px 24px;">
+            <label for="file-upload" class="upload-btn" style="display:inline-block; padding:16px 32px; background:linear-gradient(90deg,#4f8cff,#38c6ff); color:#fff; border-radius:10px; font-size:1.15rem; font-weight:700; cursor:pointer; border:none; box-shadow:0 2px 8px rgba(60,80,120,0.10); transition:background 0.2s, box-shadow 0.2s;">
+                <span>📄 Choose Resume</span>
+            </label>
+            <input type="file" id="file-upload" name="file" accept=".pdf, .docx" style="display:none;">
+            <div id="file-status" style="margin-block-start:16px; font-size:1.08rem; color:#4f8cff; font-weight:600; display:none;"></div>
+            <div id="file-error" style="margin-block-start:8px; font-size:1.05rem; color:#ff4f4f; font-weight:600; display:none;"></div>
+            <button type="button" id="upload-btn" class="submit-btn" style="display:inline-block; margin-block-start:24px; padding:14px 36px; background:linear-gradient(90deg,#ff7e5f,#feb47b); color:#fff; font-size:1.15rem; font-weight:700; border-radius:10px; cursor:pointer; border:none; box-shadow:0 2px 8px rgba(60,80,120,0.10); transition:background 0.2s, box-shadow 0.2s;">Upload & Analyze</button>
+            <div id="progress-container" style="display:none; margin-block-start:20px;">
+                <div id="progress-bar" style="block-size:18px; inline-size:0; background:linear-gradient(90deg,#4f8cff,#38c6ff); border-radius:8px;"></div>
+                <span id="progress-text" style="margin-inline-start:10px; font-weight:600; color:#2d3a4a;">0%</span>
+            </div>
+            <div id="loading-spinner" style="display:none; margin-block-start:16px; text-align:center;">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="14" stroke="#4f8cff" stroke-width="4" stroke-linecap="round" stroke-dasharray="44" stroke-dashoffset="0">
+                        <animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="1s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+            </div>
+            <div style="margin-block-start:32px; text-align:center;">
+                <span style="font-size:1.1rem; color:#5a6a85;">Supported formats: <b>.pdf</b>, <b>.docx</b></span>
+            </div>
         </div>
     </div>
+    <script>
+        const fileInput = document.getElementById('file-upload');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const fileStatus = document.getElementById('file-status');
+        const fileError = document.getElementById('file-error');
+
+        document.querySelector('.upload-btn').onclick = function() {
+            fileInput.click();
+        };
+
+        fileInput.addEventListener('change', function() {
+            fileError.style.display = 'none';
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (['pdf', 'docx'].includes(ext)) {
+                    fileStatus.textContent = `Selected: ${file.name}`;
+                    fileStatus.style.display = 'block';
+                    fileStatus.style.color = '#4f8cff';
+                } else {
+                    fileStatus.style.display = 'none';
+                    fileError.textContent = 'Invalid file type. Please select a PDF or DOCX.';
+                    fileError.style.display = 'block';
+                    fileInput.value = '';
+                }
+            } else {
+                fileStatus.style.display = 'none';
+            }
+        });
+
+        document.getElementById('upload-btn').addEventListener('click', function(e) {
+            fileError.style.display = 'none';
+            const file = fileInput.files[0];
+            if (!file) {
+                fileError.textContent = 'Please select a file before uploading.';
+                fileError.style.display = 'block';
+                return;
+            }
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!['pdf', 'docx'].includes(ext)) {
+                fileError.textContent = 'Invalid file type. Please select a PDF or DOCX.';
+                fileError.style.display = 'block';
+                return;
+            }
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    progressContainer.style.display = 'block';
+                    progressBar.style.inlineSize = percent + '%';
+                    progressText.textContent = percent + '%';
+                }
+            };
+            xhr.onloadstart = function() {
+                loadingSpinner.style.display = 'block';
+                progressContainer.style.display = 'block';
+                progressBar.style.inlineSize = '0%';
+                progressText.textContent = '0%';
+            };
+            xhr.onloadend = function() {
+                loadingSpinner.style.display = 'none';
+            };
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        fileStatus.textContent = '✅ Uploaded successfully!';
+                        fileStatus.style.color = '#38c6ff';
+                        fileStatus.style.display = 'block';
+                        window.location.href = '/analyzing';
+                    } else {
+                        fileError.textContent = '❌ Upload failed. Please try again.';
+                        fileError.style.display = 'block';
+                    }
+                }
+            };
+            const formData = new FormData();
+            formData.append('file', file);
+            xhr.send(formData);
+        });
+    </script>
 </body>
 </html>
