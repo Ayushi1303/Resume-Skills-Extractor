@@ -19,6 +19,13 @@
                     <span class="skill-tag">{{ skill }}</span>
                 {% endfor %}
             </div>
+            {% if quiz %}
+                <h2>Quiz Questions</h2>
+                {% for item in quiz %}
+                    <h3>{{ item.skill }}</h3>
+                    <pre>{{ item.questions }}</pre>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="back-button">
             <a href="/">Back to Upload</a>
