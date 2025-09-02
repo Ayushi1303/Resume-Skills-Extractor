@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .quiz-section {
+            background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(60, 80, 120, 0.12);
+            padding: 32px 24px;
+            max-inline-size: 700px;
+            margin-block-start: 40px;
+            margin-inline: auto;
+        }
+        .quiz-title {
+            font-size: 2.3rem;
+            color: #2d3a4a;
+            font-weight: 800;
+            text-align: center;
+            margin-block-end: 1.2em;
+            letter-spacing: 1px;
+        }
+        .question-block {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(60, 80, 120, 0.10);
+            margin-block-end: 28px;
+            padding: 24px 18px;
+            transition: box-shadow 0.2s;
+        }
+        .question-block:hover {
+            box-shadow: 0 6px 24px rgba(60, 80, 120, 0.18);
+        }
+        h3 {
+            font-size: 1.25rem;
+            color: #4f8cff;
+            font-weight: 700;
+            margin-block-end: 12px;
+        }
+        .options {
+            margin-block-start: 16px;
+        }
+        .options label {
+            display: block;
+            background: #f4f7fc;
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin-block-end: 10px;
+            font-size: 1.08rem;
+            color: #2d3a4a;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(60, 80, 120, 0.06);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .options label:hover {
+            background: #d1e7dd;
+            box-shadow: 0 2px 8px rgba(60, 80, 120, 0.10);
+        }
+        .quiz-submit-btn {
+            display: block;
+            margin-block-start: 32px;
+            margin-inline: auto;
+            padding: 16px 40px;
+            background: linear-gradient(90deg, #4f8cff 0%, #38c6ff 100%);
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(60, 80, 120, 0.10);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .quiz-submit-btn:hover {
+            background: linear-gradient(90deg, #38c6ff 0%, #4f8cff 100%);
+            box-shadow: 0 4px 16px rgba(60, 80, 120, 0.14);
+        }
+        .progress-bar {
+            inline-size: 100%;
+            block-size: 8px;
+            background: #e0eafc;
+            border-radius: 6px;
+            margin-block-end: 24px;
+            overflow: hidden;
+        }
+        .progress {
+            block-size: 100%;
+            background: linear-gradient(90deg, #4f8cff 0%, #38c6ff 100%);
+            border-radius: 6px;
+            transition: inline-size 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-section">
+        <div class="quiz-title">Quiz for {{ name }}</div>
+        <div class="progress-bar">
+            <div class="progress" id="progress" style="inline-size:0%"></div>
+        </div>
+        <form id="quizForm" action="{{ url_for('submit_quiz') }}" method="POST">
+            {% for q in quiz %}
+            <div class="question-block">
+                <h3>Q{{ loop.index }}. {{ q.question }}</h3>
+                <div class="options">
+                    {% for option in q.options %}
+                        <label>
+                            <input type="radio" name="q{{ loop.index0 }}" value="{{ 'ABCD'[loop.index0] }}" required>
+                            {{ option }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="quiz-submit-btn">Submit Quiz</button>
+        </form>
+    </div>
+    <script>
+        // Progress bar for answered questions
+        const form = document.getElementById('quizForm');
+        const totalQuestions = Number('{{ quiz|length }}');
+        const progress = document.getElementById('progress');
+        form.addEventListener('change', function() {
+            let answered = 0;
+            for(let i=0; i<totalQuestions; i++) {
+                let radios = form.querySelectorAll('input[name="q'+i+'"]');
+                for(let r of radios) { if(r.checked) answered++; }
+            }
+            progress.style.inlineSize = Math.round((answered/totalQuestions)*100) + '%';
+        });
+    </script>
+</body>
+
+</html>
